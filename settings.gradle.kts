@@ -1,3 +1,4 @@
+@file:Suppress("UnstableApiUsage")
 pluginManagement {
     repositories {
         google()
@@ -14,5 +15,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "LayerScaffold"
-include(":app")
- 
+include(":example")
+include(":layerscaffold")
