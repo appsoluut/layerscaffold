@@ -1,5 +1,5 @@
-mkdocs==1.4.2
-mkdocs-material==9.0.6
+mkdocs==1.5.0
+mkdocs-material==9.1.21
 
 # Force use newer versions of these dependencies. Their older versions had security vulnerabilities.
 # https://github.com/saket/telephoto/security/dependabot/1
