@@ -31,5 +31,4 @@ object LayerScaffoldDefaults {
      * The default vertical padding of the front layer.
      */
     val FrontLayerVerticalPadding = 8.dp
-
 }
