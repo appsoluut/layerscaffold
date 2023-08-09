@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="layerscaffold_cd_concealed">Concealed</string>
+    <string name="layerscaffold_cd_revealed">Revealed</string>
+    <string name="layerscaffold_cd_peeking">Peeking</string>
+</resources>
