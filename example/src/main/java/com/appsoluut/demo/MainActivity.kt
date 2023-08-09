@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.appsoluut.demo.ui.BottomBar
 import com.appsoluut.demo.ui.theme.LayerScaffoldTheme
 import com.appsoluut.layerscaffold.LayerScaffold
 
@@ -25,6 +26,7 @@ class MainActivity : ComponentActivity() {
                     backLayerPeekHeight = 20.dp,
                     frontLayerPeekHeight = 100.dp,
                     headerHeight = headerHeight.dp,
+                    bottomBar = { BottomBar() },
                     backLayerContent = {
                         Greeting("Android")
                     },

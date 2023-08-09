@@ -34,6 +34,7 @@ fun LayerScaffold(
     backLayerContent: @Composable () -> Unit,
     frontLayerContent: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+    bottomBar: @Composable () -> Unit = {},
     scaffoldState: LayerScaffoldState = rememberLayerScaffoldState(initialValue = LayerValue.Revealed),
     gesturesEnabled: Boolean = true,
     headerHeight: Dp = LayerScaffoldDefaults.HeaderHeight,
@@ -43,7 +44,7 @@ fun LayerScaffold(
     frontLayerPeekHeight: Dp = LayerScaffoldDefaults.PeekHeight,
     frontLayerBackgroundColor: Color = MaterialTheme.colors.surface,
     frontLayerContentColor: Color = contentColorFor(frontLayerBackgroundColor),
-    frontLayerHandle: @Composable () -> Unit = { LayerHandle() }
+    frontLayerHandle: @Composable () -> Unit = { LayerHandle() },
 ) {
     val headerHeightPx: Float
     val backLayerPeekHeightPx: Float
@@ -66,22 +67,23 @@ fun LayerScaffold(
         val scope = rememberCoroutineScope()
         Stack(
             modifier = modifier.fillMaxSize(),
+            bottomBar = bottomBar,
             backLayer = backLayerContent,
             calculateBackLayerConstraints = calculateBackLayerConstraints
-        ) { constraints, backLayerHeight ->
+        ) { constraints, backLayerHeight, bottomBarHeight ->
             val fullHeight = constraints.maxHeight.toFloat()
             val revealedHeight = fullHeight - headerHeightPx
-            val peekHeight = fullHeight - frontLayerPeekHeightPx
+            val peekHeight = fullHeight - frontLayerPeekHeightPx - bottomBarHeight
+
+            val concealedContentDescription = stringResource(id = R.string.layerscaffold_cd_concealed)
+            val revealedContentDescription = stringResource(id = R.string.layerscaffold_cd_revealed)
+            val peekingContentDescription = stringResource(id = R.string.layerscaffold_cd_peeking)
 
             val nestedScroll = if (gesturesEnabled) {
                 Modifier.nestedScroll(scaffoldState.nestedScrollConnection)
             } else {
                 Modifier
             }
-
-            val concealedContentDescription = stringResource(id = R.string.layerscaffold_cd_concealed)
-            val revealedContentDescription = stringResource(id = R.string.layerscaffold_cd_revealed)
-            val peekingContentDescription = stringResource(id = R.string.layerscaffold_cd_peeking)
 
             val swipeable = Modifier
                 .then(nestedScroll)
