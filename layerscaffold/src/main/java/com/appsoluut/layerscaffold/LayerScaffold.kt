@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.collapse
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.expand
@@ -78,6 +79,10 @@ fun LayerScaffold(
                 Modifier
             }
 
+            val concealedContentDescription = stringResource(id = R.string.layerscaffold_cd_concealed)
+            val revealedContentDescription = stringResource(id = R.string.layerscaffold_cd_revealed)
+            val peekingContentDescription = stringResource(id = R.string.layerscaffold_cd_peeking)
+
             val swipeable = Modifier
                 .then(nestedScroll)
                 .swipeable(
@@ -94,13 +99,14 @@ fun LayerScaffold(
                     when (scaffoldState.currentValue) {
                         LayerValue.Concealed -> {
                             collapse {
-                                if (scaffoldState.confirmStateChange(LayerValue.Peeking)) {
-                                    scope.launch { scaffoldState.peek() }
+                                if (scaffoldState.confirmStateChange(LayerValue.Revealed)) {
+                                    scope.launch { scaffoldState.reveal() }
                                 }
                                 true
                             }
-                            contentDescription = "Expand"
+                            contentDescription = concealedContentDescription
                         }
+
                         LayerValue.Revealed -> {
                             expand {
                                 if (scaffoldState.confirmStateChange(LayerValue.Concealed)) {
@@ -108,8 +114,9 @@ fun LayerScaffold(
                                 }
                                 true
                             }
-                            contentDescription = "Collapse"
+                            contentDescription = revealedContentDescription
                         }
+
                         LayerValue.Peeking -> {
                             expand {
                                 if (scaffoldState.confirmStateChange(LayerValue.Revealed)) {
@@ -117,7 +124,7 @@ fun LayerScaffold(
                                 }
                                 true
                             }
-                            contentDescription = "Peek"
+                            contentDescription = peekingContentDescription
                         }
                     }
                 }
