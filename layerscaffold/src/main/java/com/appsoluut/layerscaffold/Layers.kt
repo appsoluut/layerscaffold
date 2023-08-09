@@ -5,6 +5,11 @@ package com.appsoluut.layerscaffold
  */
 internal enum class Layers {
     /**
+     * The bottom bar layer.
+     */
+    BottomBar,
+
+    /**
      * The back layer.
      */
     Back,
