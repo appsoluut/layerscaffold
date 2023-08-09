@@ -10,6 +10,10 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.unit.Velocity
 import kotlinx.coroutines.CancellationException
 
 /**
@@ -17,7 +21,7 @@ import kotlinx.coroutines.CancellationException
  *
  * @param initialValue The initial value of the state.
  * @param animationSpec The default animation that will be used to animate to a new state.
- * @param confirmStateChange Optional callback invoked to confirm or veto a pending state change.
+ * @property confirmStateChange Optional callback invoked to confirm or veto a pending state change.
  * @property snackbarHostState The [SnackbarHostState] used to show snackbars inside the scaffold.
  */
 @ExperimentalMaterialApi
@@ -25,7 +29,7 @@ import kotlinx.coroutines.CancellationException
 class LayerScaffoldState(
     initialValue: LayerValue,
     animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
-    confirmStateChange: (LayerValue) -> Boolean = { true },
+    val confirmStateChange: (LayerValue) -> Boolean = { true },
     val snackbarHostState: SnackbarHostState = SnackbarHostState()
 ) : SwipeableState<LayerValue>(
     initialValue = initialValue,
@@ -43,6 +47,8 @@ class LayerScaffoldState(
      */
     val isConcealed: Boolean
         get() = currentValue == LayerValue.Concealed
+
+    internal val nestedScrollConnection = this.PreUpPostDownNestedScrollConnection
 
     /**
      * Reveal the back layer with animation and suspend until it if fully revealed or animation
@@ -127,3 +133,52 @@ fun rememberLayerScaffoldState(
         )
     }
 }
+
+// temp default nested scroll connection for swipeables which desire as an opt in
+// revisit in b/174756744 as all types will have their own specific connection probably
+@ExperimentalMaterialApi
+internal val <T> SwipeableState<T>.PreUpPostDownNestedScrollConnection: NestedScrollConnection
+    get() = object : NestedScrollConnection {
+        override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+            val delta = available.toFloat()
+            return if (delta < 0 && source == NestedScrollSource.Drag) {
+                performDrag(delta).toOffset()
+            } else {
+                Offset.Zero
+            }
+        }
+
+        override fun onPostScroll(
+            consumed: Offset,
+            available: Offset,
+            source: NestedScrollSource
+        ): Offset {
+            return if (source == NestedScrollSource.Drag) {
+                performDrag(available.toFloat()).toOffset()
+            } else {
+                Offset.Zero
+            }
+        }
+
+        override suspend fun onPreFling(available: Velocity): Velocity {
+            val toFling = Offset(available.x, available.y).toFloat()
+            return if (toFling < 0 && offset.value > minBound) {
+                performFling(velocity = toFling)
+                // since we go to the anchor with tween settling, consume all for the best UX
+                available
+            } else {
+                Velocity.Zero
+            }
+        }
+
+        override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
+            performFling(velocity = Offset(available.x, available.y).toFloat())
+            return available
+        }
+
+        private fun Float.toOffset(): Offset = Offset(0f, this)
+
+        private fun Offset.toFloat(): Float = this.y
+    }
+
+internal var minBound = Float.NEGATIVE_INFINITY

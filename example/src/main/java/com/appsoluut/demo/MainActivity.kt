@@ -7,7 +7,9 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.appsoluut.demo.ui.theme.LayerScaffoldTheme
 import com.appsoluut.layerscaffold.LayerScaffold
 
@@ -16,9 +18,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val headerHeight = LocalConfiguration.current.screenHeightDp / 2
             LayerScaffoldTheme {
                 // A layer container using the 'background' color from the theme
                 LayerScaffold(
+                    backLayerPeekHeight = 20.dp,
+                    frontLayerPeekHeight = 100.dp,
+                    headerHeight = headerHeight.dp,
                     backLayerContent = {
                         Greeting("Android")
                     },
