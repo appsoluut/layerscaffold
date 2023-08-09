@@ -1,6 +1,7 @@
 # LayerScaffold States
 
 LayerScaffold supports the following 3 states:
+
 1. `Concealed` - The back layer is not hidden (only the `backLayerPeekHeight` is still visible)
 2. `Peeking` - The front layer is only showing it's `frontLayerPeekHeight` and the back layer is
    fully visible
