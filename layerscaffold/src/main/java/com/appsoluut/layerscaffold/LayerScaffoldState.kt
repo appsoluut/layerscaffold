@@ -48,6 +48,12 @@ class LayerScaffoldState(
     val isConcealed: Boolean
         get() = currentValue == LayerValue.Concealed
 
+    /**
+     * Whether the front layer is peeking.
+     */
+    val isPeeking: Boolean
+        get() = currentValue == LayerValue.Peeking
+
     internal val nestedScrollConnection = this.PreUpPostDownNestedScrollConnection
 
     /**

@@ -1,5 +1,6 @@
 package com.appsoluut.layerscaffold
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.UiComposable
@@ -21,6 +22,10 @@ import kotlin.math.max
  * @param backLayer The composable that will be placed at the back of the stack.
  * @param calculateBackLayerConstraints A function that will be called to calculate the constraints
  * of the [backLayer].
+ * @param frontLayerHandle The composable that will be placed on above the [frontLayer] and
+ * will be used to drag the [frontLayer] up and down.
+ * @param frontLayerHeader The composable that will be placed on between the [frontLayer] and
+ * [frontLayerHandle].
  * @param frontLayer The composable that will be placed on top of the stack.
  */
 @Composable
@@ -30,7 +35,9 @@ internal fun Stack(
     bottomBar: @Composable @UiComposable () -> Unit,
     backLayer: @Composable @UiComposable () -> Unit,
     calculateBackLayerConstraints: (Constraints) -> Constraints,
-    frontLayer: @Composable @UiComposable (Constraints, Float, Float) -> Unit
+    frontLayerHandle: @Composable @UiComposable () -> Unit,
+    frontLayerHeader: @Composable @UiComposable () -> Unit,
+    frontLayer: @Composable @UiComposable (Constraints, Float, Float, Float) -> Unit
 ) {
     SubcomposeLayout(modifier) { constraints ->
         val looseConstraints = constraints.copy(
@@ -49,8 +56,15 @@ internal fun Stack(
 
         val backLayerHeight = backLayerPlaceable.height.toFloat()
 
+        val frontLayerCombinedHeaderHeight = subcompose("header") {
+            Column {
+                frontLayerHandle()
+                frontLayerHeader()
+            }
+        }.sumOf { it.measure(looseConstraints).height }.toFloat()
+
         val placeables = subcompose(Layers.Front) {
-            frontLayer(constraints, backLayerHeight, bottomBarHeight.toFloat())
+            frontLayer(constraints, backLayerHeight, frontLayerCombinedHeaderHeight, bottomBarHeight.toFloat())
         }.fastMap { it.measure(constraints) }
 
         var maxWidth = max(constraints.minWidth, backLayerPlaceable.width)

@@ -1,7 +1,6 @@
 package com.appsoluut.layerscaffold
 
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -25,6 +24,7 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.offset
+import com.appsoluut.layerscaffold.LayerScaffoldDefaults.FrontLayerHeaderElevation
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 
@@ -38,21 +38,23 @@ fun LayerScaffold(
     scaffoldState: LayerScaffoldState = rememberLayerScaffoldState(initialValue = LayerValue.Revealed),
     gesturesEnabled: Boolean = true,
     headerHeight: Dp = LayerScaffoldDefaults.HeaderHeight,
-    backLayerPeekHeight: Dp = LayerScaffoldDefaults.PeekHeight,
+    backLayerPeekHeight: Dp = LayerScaffoldDefaults.BackLayerPeekHeight,
     backLayerBackgroundColor: Color = MaterialTheme.colors.primary,
     backLayerContentColor: Color = contentColorFor(backLayerBackgroundColor),
-    frontLayerPeekHeight: Dp = LayerScaffoldDefaults.PeekHeight,
+    frontLayerPeekHeight: Dp? = null,
     frontLayerBackgroundColor: Color = MaterialTheme.colors.surface,
     frontLayerContentColor: Color = contentColorFor(frontLayerBackgroundColor),
+    frontLayerHeaderElevation: Dp = FrontLayerHeaderElevation,
+    frontLayerHeader: @Composable () -> Unit = {},
     frontLayerHandle: @Composable () -> Unit = { LayerHandle() },
 ) {
     val headerHeightPx: Float
     val backLayerPeekHeightPx: Float
-    val frontLayerPeekHeightPx: Float
+    var frontLayerPeekHeightPx: Float
     with(LocalDensity.current) {
         headerHeightPx = headerHeight.toPx()
         backLayerPeekHeightPx = backLayerPeekHeight.toPx()
-        frontLayerPeekHeightPx = frontLayerPeekHeight.toPx()
+        frontLayerPeekHeightPx = frontLayerPeekHeight?.toPx() ?: -1f
     }
 
     val calculateBackLayerConstraints: (Constraints) -> Constraints = {
@@ -69,10 +71,15 @@ fun LayerScaffold(
             modifier = modifier.fillMaxSize(),
             bottomBar = bottomBar,
             backLayer = backLayerContent,
+            frontLayerHandle = frontLayerHandle,
+            frontLayerHeader = frontLayerHeader,
             calculateBackLayerConstraints = calculateBackLayerConstraints
-        ) { constraints, backLayerHeight, bottomBarHeight ->
+        ) { constraints, backLayerHeight, combinedHeaderHeight, bottomBarHeight ->
             val fullHeight = constraints.maxHeight.toFloat()
             val revealedHeight = fullHeight - headerHeightPx
+            if (frontLayerPeekHeightPx < 0) {
+                frontLayerPeekHeightPx = combinedHeaderHeight
+            }
             val peekHeight = fullHeight - frontLayerPeekHeightPx - bottomBarHeight
 
             val concealedContentDescription = stringResource(id = R.string.layerscaffold_cd_concealed)
@@ -139,10 +146,13 @@ fun LayerScaffold(
                 color = frontLayerBackgroundColor,
                 contentColor = frontLayerContentColor
             ) {
-                Box(modifier = Modifier.padding(bottom = backLayerPeekHeight)) {
-                    frontLayerHandle()
-                    frontLayerContent()
-                }
+                FrontLayer(
+                    modifier = Modifier.padding(bottom = backLayerPeekHeight),
+                    handle = frontLayerHandle,
+                    header = frontLayerHeader,
+                    content = frontLayerContent,
+                    headerElevation = frontLayerHeaderElevation
+                )
             }
         }
     }

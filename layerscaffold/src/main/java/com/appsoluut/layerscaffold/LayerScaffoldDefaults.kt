@@ -10,12 +10,17 @@ object LayerScaffoldDefaults {
     /**
      * The default peek height of the back layer.
      */
-    val PeekHeight = 56.dp
+    val BackLayerPeekHeight = 18.dp
+
+    /**
+     * The default peek height of the front layer.
+     */
+    val FrontLayerPeekHeight = 56.dp
 
     /**
      * The default header height of the front layer.
      */
-    val HeaderHeight = 48.dp
+    val HeaderHeight = 128.dp
 
     /**
      * The default width of the front layer handle.
@@ -28,7 +33,12 @@ object LayerScaffoldDefaults {
     val FrontLayerHandleHeight = 4.dp
 
     /**
-     * The default vertical padding of the front layer.
+     * The default minimum height of the front layer handle.
      */
-    val FrontLayerVerticalPadding = 8.dp
+    val FrontLayerHandleMinHeight = 20.dp
+
+    /**
+     * The default elevation of the front layer header.
+     */
+    val FrontLayerHeaderElevation = 4.dp
 }
