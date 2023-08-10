@@ -12,16 +12,16 @@ import androidx.compose.ui.unit.Dp
  * @param handle The handle.
  * @param header The header.
  * @param content The content.
- * @param modifier The modifier to apply to this layout.
  * @param headerElevation The elevation of the header.
+ * @param modifier The modifier to apply to this layout.
  */
 @Composable
 internal fun FrontLayer(
     handle: @Composable () -> Unit,
     header: @Composable () -> Unit,
     content: @Composable () -> Unit,
+    headerElevation: Dp,
     modifier: Modifier = Modifier,
-    headerElevation: Dp
 ) {
     Column(modifier = modifier) {
         Surface(
