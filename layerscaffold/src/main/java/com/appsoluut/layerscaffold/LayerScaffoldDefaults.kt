@@ -40,5 +40,5 @@ object LayerScaffoldDefaults {
     /**
      * The default elevation of the front layer header.
      */
-    val FrontLayerHeaderElevation = 8.dp
+    val FrontLayerHeaderElevation = 4.dp
 }

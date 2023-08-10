@@ -22,6 +22,10 @@ import kotlin.math.max
  * @param backLayer The composable that will be placed at the back of the stack.
  * @param calculateBackLayerConstraints A function that will be called to calculate the constraints
  * of the [backLayer].
+ * @param frontLayerHandle The composable that will be placed on above the [frontLayer] and
+ * will be used to drag the [frontLayer] up and down.
+ * @param frontLayerHeader The composable that will be placed on between the [frontLayer] and
+ * [frontLayerHandle].
  * @param frontLayer The composable that will be placed on top of the stack.
  */
 @Composable

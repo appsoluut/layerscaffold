@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.offset
+import com.appsoluut.layerscaffold.LayerScaffoldDefaults.FrontLayerHeaderElevation
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 
@@ -43,6 +44,7 @@ fun LayerScaffold(
     frontLayerPeekHeight: Dp? = null,
     frontLayerBackgroundColor: Color = MaterialTheme.colors.surface,
     frontLayerContentColor: Color = contentColorFor(frontLayerBackgroundColor),
+    frontLayerHeaderElevation: Dp = FrontLayerHeaderElevation,
     frontLayerHeader: @Composable () -> Unit = {},
     frontLayerHandle: @Composable () -> Unit = { LayerHandle() },
 ) {
@@ -148,7 +150,8 @@ fun LayerScaffold(
                     modifier = Modifier.padding(bottom = backLayerPeekHeight),
                     handle = frontLayerHandle,
                     header = frontLayerHeader,
-                    content = frontLayerContent
+                    content = frontLayerContent,
+                    headerElevation = frontLayerHeaderElevation
                 )
             }
         }
