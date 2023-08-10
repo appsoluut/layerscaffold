@@ -3,7 +3,10 @@ package com.appsoluut.demo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,12 +26,13 @@ class MainActivity : ComponentActivity() {
             LayerScaffoldTheme {
                 // A layer container using the 'background' color from the theme
                 LayerScaffold(
-                    backLayerPeekHeight = 20.dp,
-                    frontLayerPeekHeight = 100.dp,
                     headerHeight = headerHeight.dp,
                     bottomBar = { BottomBar() },
                     backLayerContent = {
                         Greeting("Android")
+                    },
+                    frontLayerHeader = {
+                        SheetHeader()
                     },
                     frontLayerContent = {
                         Text("Front layer content")
@@ -36,6 +40,24 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun SheetHeader(
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.padding(horizontal = 16.dp).padding(bottom = 8.dp)
+    ) {
+        Text(
+            text = "Header",
+            style = MaterialTheme.typography.h6
+        )
+        Text(
+            text = "Subtitle",
+            style = MaterialTheme.typography.subtitle1
+        )
     }
 }
 

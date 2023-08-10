@@ -3,7 +3,7 @@ package com.appsoluut.layerscaffold
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import com.appsoluut.layerscaffold.LayerScaffoldDefaults.FrontLayerHandleHeight
+import com.appsoluut.layerscaffold.LayerScaffoldDefaults.FrontLayerHandleMinHeight
 import com.appsoluut.layerscaffold.LayerScaffoldDefaults.FrontLayerHandleWidth
-import com.appsoluut.layerscaffold.LayerScaffoldDefaults.FrontLayerVerticalPadding
 
 /**
  * A composable that displays a handle for the front layer.
@@ -33,7 +33,7 @@ internal fun LayerHandle(
     shape: Shape = RoundedCornerShape(percent = 50)
 ) {
     Box(
-        modifier = modifier.padding(vertical = FrontLayerVerticalPadding),
+        modifier = modifier.fillMaxWidth().defaultMinSize(minHeight = FrontLayerHandleMinHeight),
         contentAlignment = contentAlignment
     ) {
         Box(

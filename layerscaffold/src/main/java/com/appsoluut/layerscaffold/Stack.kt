@@ -1,5 +1,6 @@
 package com.appsoluut.layerscaffold
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.UiComposable
@@ -30,7 +31,9 @@ internal fun Stack(
     bottomBar: @Composable @UiComposable () -> Unit,
     backLayer: @Composable @UiComposable () -> Unit,
     calculateBackLayerConstraints: (Constraints) -> Constraints,
-    frontLayer: @Composable @UiComposable (Constraints, Float, Float) -> Unit
+    frontLayerHandle: @Composable @UiComposable () -> Unit,
+    frontLayerHeader: @Composable @UiComposable () -> Unit,
+    frontLayer: @Composable @UiComposable (Constraints, Float, Float, Float) -> Unit
 ) {
     SubcomposeLayout(modifier) { constraints ->
         val looseConstraints = constraints.copy(
@@ -49,8 +52,15 @@ internal fun Stack(
 
         val backLayerHeight = backLayerPlaceable.height.toFloat()
 
+        val frontLayerCombinedHeaderHeight = subcompose("header") {
+            Column {
+                frontLayerHandle()
+                frontLayerHeader()
+            }
+        }.sumOf { it.measure(looseConstraints).height }.toFloat()
+
         val placeables = subcompose(Layers.Front) {
-            frontLayer(constraints, backLayerHeight, bottomBarHeight.toFloat())
+            frontLayer(constraints, backLayerHeight, frontLayerCombinedHeaderHeight, bottomBarHeight.toFloat())
         }.fastMap { it.measure(constraints) }
 
         var maxWidth = max(constraints.minWidth, backLayerPlaceable.width)
